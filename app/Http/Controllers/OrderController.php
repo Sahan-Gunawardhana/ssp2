@@ -49,17 +49,11 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'customer_id' => 'required|exists:users,id',
-            'order_date' => 'nullable|date',
-            'zip_code' => 'required|string|max:10',
-            'province' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'total' => 'required|numeric|min:0',
-            'status' => 'required|string|in:pending,confirmed,shipped,cancelled'
+        'status' => 'required|string|in:pending,confirmed,shipped,canceled'
         ]);
 
         $order = Order::findOrFail($id);

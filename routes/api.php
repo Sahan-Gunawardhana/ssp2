@@ -15,7 +15,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::apiResource('products', ProductController::class);
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::apiResource('appointment', AppointmentController::class);
+    Route::apiResource('appointments', AppointmentController::class);
     Route::apiResource('orders', OrderController::class);
     Route::apiResource('boxes', BoxController::class);
     Route::apiResource('users', UserController::class);

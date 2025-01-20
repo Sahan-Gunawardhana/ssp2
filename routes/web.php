@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\WebControllers\UserController;
 use App\Http\Controllers\WebControllers\ProductController;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,7 +43,7 @@ Route::middleware([
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.home');
     Route::get('/admin/products', function () { return view('admin.manageP');})->name('admin.products');
     Route::get('/admin/users', function () {  return view('admin.manageU');})->name('admin.users');
@@ -56,3 +57,4 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])->name('admin.logout');
+

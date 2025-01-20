@@ -36,7 +36,7 @@
         </thead>
         <tbody id="orders-container">
             <tr class="even:bg-blue-gray-50/50">
-                <td colspan="7" class="py-6 text-center text-black bg-teal-500">
+                <td colspan="8" class="py-6 text-center text-white bg-teal-600">
                     Loading...
                 </td>
             </tr>
@@ -64,15 +64,23 @@
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">${orders.order_date}</td>
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">${orders.street}, ${orders.city}, ${orders.province}, ${orders.zip_code}</td>
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">
-                        ${orders.orderItems.map(
-                            item => `${item.product.pro_name} * ${item.quantity}`
-                        ).join(`<br>`)}
+                        ${orders.orderItems ? orders.orderItems.map(
+                        item => `${item.product.pro_name} * ${item.quantity}`
+                        ).join(`<br>`) : 'No items'}
                     </td>
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">
-                        ${orders.status}</td>
+                        <select role="menu"
+                            class="text-white bg-gray-800 border border-gray-600 rounded-md p-auto status-dropdown focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            data-order-id="${orders.id}" onchange="updateStatus(event)">
+                            <option value="pending" ${orders.status==='pending' ? 'selected' : '' }> Pending </option>
+                            <option value="confirmed" ${orders.status==='confirmed' ? 'selected' : '' }> Confirmed </option>
+                            <option value="shipped" ${orders.status==='shipped' ? 'selected' : '' }> Shipped </option>
+                            <option value="canceled" ${orders.status==='canceled' ? 'selected' : '' }> Canceled </option>
+                        </select>
+                    </td>
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">${orders.total}</td>
                     <td class="px-4">
-                        <button onclick="deleteUser(${orders.id})" class="text-black">
+                        <button onclick="deleteOrder(${orders.id})" class="text-black">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed" stroke="#000" stroke-width="2">
                                 <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
                             </svg>
@@ -85,5 +93,71 @@
             console.error(error);
         });
     });    
+
+    function deleteOrder(orderId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action is irreversible",
+        icon: 'warning', 
+        showCancelButton: true,
+        confirmButtonColor: '#439288',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel'
+    }).then((result) => { 
+        if (result.isConfirmed) { 
+            axios.delete(`${url}/${orderId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Deleted!",
+                        text: "Order has been deleted",
+                    }).then(() => { 
+                        location.reload(); 
+                    });
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: "Failed to delete the order. Please try again."
+                    });
+                });
+        }
+    });
+}
+
+    function updateStatus(event){
+        const dropDown = event.target;
+        const orderId = dropDown.getAttribute('data-order-id');
+        const newStatus = dropDown.value;
+
+        axios.patch(`${url}/${orderId}`,{
+            status: newStatus
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            Swal.fire({
+                icon:'success',
+                title:'Status Updated',
+                text: `Order status updated to ${newStatus}`,
+                confirmButtonText: 'OK'
+            });
+        })
+        .catch(error => {
+                console.log(error);
+                Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update order status. Please try again.',
+                confirmButtonText: 'OK',
+            });
+        });
+    }
 </script>
 @endsection

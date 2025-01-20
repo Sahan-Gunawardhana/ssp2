@@ -10,7 +10,9 @@ class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * 
      */
+    
     public function index()
     {
         $appointment = Appointment::with(['customer'])->paginate(10);
@@ -47,21 +49,21 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:users,id',
-            'pet_name' => 'required|string|max:255',
-            'drop_off_date' => 'required|date_format:Y-m-d',
-            'pick_up_date' => 'required|date_format:Y-m-d',
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:upcoming,passed',
-        ]);
+    // public function update(Request $request, string $id)
+    // {
+    //     $validated = $request->validate([
+    //         'customer_id' => 'required|exists:users,id',
+    //         'pet_name' => 'required|string|max:255',
+    //         'drop_off_date' => 'required|date_format:Y-m-d',
+    //         'pick_up_date' => 'required|date_format:Y-m-d',
+    //         'description' => 'nullable|string',
+    //         'status' => 'required|string|in:upcoming,passed',
+    //     ]);
 
-        $appointment = Appointment::findOrFail($id);
-        $appointment->update($validated);
-        return new AppointmentResource($appointment);
-    }
+    //     $appointment = Appointment::findOrFail($id);
+    //     $appointment->update($validated);
+    //     return new AppointmentResource($appointment);
+    // }
 
     /**
      * Remove the specified resource from storage.
