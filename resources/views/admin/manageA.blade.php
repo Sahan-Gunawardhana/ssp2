@@ -21,7 +21,7 @@
     </form>
 </div>
 
-
+{{-- 
 <script>
     const token = localStorage.getItem('authToken');
     let url = "http://127.0.0.1:8000/api/appointments";
@@ -58,5 +58,5 @@
             });
         }
     });
-</script>
+</script> --}}
 @endsection
