@@ -5,73 +5,59 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Contract\Database;
 
 class AppointmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * 
-     */
-    
-    public function index()
+    protected $database;
+    protected $tablename;
+
+    public function __construct(Database $database)
     {
-        $appointment = Appointment::with(['customer'])->paginate(10);
-        return AppointmentResource::collection($appointment);
+        $this->database = $database;
+        $this->tablename = 'Appointments';
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:users,id',
-            'pet_name' => 'required|string|max:255',
-            'drop_off_date' => 'required|date_format:Y-m-d',
-            'pick_up_date' => 'required|date_format:Y-m-d',
-            'description' => 'nullable|string',
-            'status' => 'required|string|in:upcoming,passed',
-        ]);
-
-        $appointment = Appointment::create($validated);
-        return new AppointmentResource($appointment);
+    public function index(){
+        return view ('user.appointments');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $appointment = Appointment::with(['customer'])->findOrFail($id);
-        return new AppointmentResource($appointment);
+    public function store(Request $request){
+        $postData = [
+            'name' => $request->input('name'),
+            'pet_name' => $request->input('pet_name'),
+            'userId' => $request->input('userId'),
+            'drop_off_date' => $request->input('drop_off_date'),
+            'pick_up_date' => $request->input('pick_up_date'),
+            'health'=> $request->input('health'),
+            'notes'=>$request->input('notes'),
+            'created_at' => now()->toDateTimeString(),
+        ];
+        $postRef = $this->database->getReference($this->tablename)->push($postData);
+        if ($postRef) {
+            session()->flash('success', 'Appointment created successfully.');
+            return redirect('appointments');
+        } else {
+            session()->flash('error', 'Failed to confirm the appointment. Please try again.');
+            return redirect('appointments');
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    // public function update(Request $request, string $id)
-    // {
-    //     $validated = $request->validate([
-    //         'customer_id' => 'required|exists:users,id',
-    //         'pet_name' => 'required|string|max:255',
-    //         'drop_off_date' => 'required|date_format:Y-m-d',
-    //         'pick_up_date' => 'required|date_format:Y-m-d',
-    //         'description' => 'nullable|string',
-    //         'status' => 'required|string|in:upcoming,passed',
-    //     ]);
+    public function adminIndex(){
+        
+        $appointments = $this->database->getReference($this->tablename)->getValue();
+        $appointments = $appointments ?: [];
+        return view('admin.manageA', compact('appointments'));
+    }
 
-    //     $appointment = Appointment::findOrFail($id);
-    //     $appointment->update($validated);
-    //     return new AppointmentResource($appointment);
-    // }
+    public function destroy( $id ){
+        $key = $id;
+        $del_data = $this->database->getReference($this->tablename.'/'.$key)->remove();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $appointment = Appointment::findOrFail($id);
-        $appointment->delete();
-        return response()->json(['message' => 'Appointment deleted successfully'], 200);
+        if ($del_data) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
     }
 }

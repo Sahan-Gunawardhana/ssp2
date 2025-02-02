@@ -20,7 +20,7 @@ class ProductResource extends JsonResource
             'pro_width'=>$this->pro_width,
             'pro_height'=>$this->pro_height,
             'pro_length'=>$this->pro_length,
-            // 'pro_image_url' => $this->pro_image_url,
+            'pro_image_url' => $this->pro_image_url,
             'quantity' => $this->quantity,
             'orderItems' => OrderItemResource::collection($this->whenLoaded('orderItems')),
             'created_at' => $this->created_at,

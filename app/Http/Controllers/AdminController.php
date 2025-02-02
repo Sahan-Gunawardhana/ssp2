@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Appointment;
 use App\Models\Box;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use ArielMejiaDev\LarapexCharts\DonutChart;
@@ -60,10 +61,6 @@ class AdminController extends Controller
             ->setTitle('Seasonal Trends in Appointments') 
             ->setXAxis($months) 
             ->setDataset([
-                [
-                    'name' => 'Appointments',
-                    'data' => $monthlyCounts3, 
-                ],
                 [
                     'name' => 'Boxes',
                     'data' => $monthlyCounts2, 
@@ -134,10 +131,7 @@ class AdminController extends Controller
                     'name' => 'Boxes',
                     'data' => $monthlyCounts2,
                 ],
-                [
-                    'name' => 'Appointments',
-                    'data' => $monthlyCounts3,
-                ]
+                
             ]);
 
         $usersCount = User::selectRaw('Month(created_at) as month, count(*) as count')
@@ -168,20 +162,29 @@ class AdminController extends Controller
 
         
         
-        $petTypeCounts = Appointment::selectRaw('pet_type, count(*) as count') 
-        ->groupBy('pet_type') 
-        ->get(); 
-
-        $petTypes = $petTypeCounts->pluck('pet_type')->toArray(); 
-        $counts = $petTypeCounts->pluck('count')->toArray(); 
+            $orderCategoryCounts = OrderItem::selectRaw('products.category as category, count(*) as count')
+            ->join('products', 'order_items.product_id', '=', 'products.id') // Join order_items with products
+            ->groupBy('products.category') // Group by category
+            ->get();
+        
+        // Get category names and their respective counts
+        $categories = $orderCategoryCounts->pluck('category')->toArray();
+        $counts = $orderCategoryCounts->pluck('count')->toArray();
+        
+        // Calculate the total number of items to calculate percentages
+        $totalItems = array_sum($counts);
+        
+        // Calculate the percentage for each category
+        $percentages = array_map(function($count) use ($totalItems) {
+            return ($totalItems > 0) ? ($count / $totalItems) * 100 : 0;
+        }, $counts);
+        
+        // Create the chart with percentages
         $chart5 = (new LarapexChart)
-            ->setTitle("Appointment Categories")
-            ->setType('pie') 
-            ->setLabels($petTypes)
-            ->setDataset(
-                    $counts
-                
-            );
+            ->setTitle("Order Categories")
+            ->setType('pie')
+            ->setLabels($categories)
+            ->setDataset($percentages); // Use percentages for the dataset
 
         $products = Product::all();
         $productCat = $products->pluck('category')->unique()->toArray();

@@ -13,6 +13,10 @@ class Box extends Model
         'customer_id',
         'subscription_type',  // twice a week,weekly ,monthly, once every 4 months, once every 6 months, once every 12 months
         'status',
+        'zip_code',
+        'province',
+        'city',
+        'street',
         'price',
     ];
 

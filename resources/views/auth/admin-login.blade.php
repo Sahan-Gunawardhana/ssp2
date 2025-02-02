@@ -1,11 +1,8 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
-
+    <div class="max-w-md p-6 mx-auto mt-10 bg-white rounded-lg shadow-lg">
+        
         <x-validation-errors class="mb-4" />
-
+        <h1 class="text-center ">Admin Login</h1>    
         @session('status')
             <div class="mb-4 text-sm font-medium text-green-600">
                 {{ $value }}
@@ -46,21 +43,34 @@
         </form>
         <script>
             document.querySelector('form').addEventListener('submit', function(event){
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-
-                axios.post('api/login',{
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
                     email: email,
-                    user_type: 'admin',
                     password: password
                 })
-                .then(response => {
-                    localStorage.setItem('authToken', response.data.token);
-                })
-                .catch(error => {
-                    console.error('login failed', error);
-                })
             })
+            .then(response => response.json())
+            .then(data => {
+                // Assuming the API returns a plain text token in `data.token`
+                if (data.token) {
+                    // Save the token in localStorage
+                    localStorage.setItem('authToken', data.token);
+                    console.log('Token saved:', data.token);
+                } else {
+                    alert('Login failed: Token not received');
+                }
+            })
+            .catch(error => {
+                console.error('Login failed', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
         </script>
-    </x-authentication-card>
+    </div>
 </x-guest-layout>

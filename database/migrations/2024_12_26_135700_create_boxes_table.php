@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('subscription_type');
             $table->boolean('status')->default(true);
             $table->decimal('price', 10, 2);
+            $table->text('zip_code');
+            $table->text('province');
+            $table->text('city');
+            $table->text('street');
             $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
         });

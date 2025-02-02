@@ -21,7 +21,7 @@
 
                 <h3 class="text-xl font-semibold">Admin Panel</h3>
                 @auth
-                <a href="{{ route('profile.show') }}" class="text-yellow-300 transition duration-300 hover:underline">
+                <a wire:navigate href="{{ route('profile.show') }}" class="text-yellow-300 transition duration-300 hover:underline">
                     {{ auth()->user()?->name }}
                 </a>
                 @endauth
@@ -30,7 +30,7 @@
             <nav class="sidebar-nav">
                 <ul class="space-y-10">
                     <li>
-                        <a href="{{ url('admin/dashboard') }}"
+                        <a wire:navigate href="{{ url('admin/dashboard') }}"
                             class="flex items-center px-4 py-3 text-gray-300 transition duration-300 rounded-lg hover:bg-teal-600 hover:text-white @if(request()->is('admin/dashboard')) bg-teal-600 text-white @else hover:bg-teal-600 hover:text-white @endif">
                             <span class="mr-3 material-icons">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
@@ -42,7 +42,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('admin/users') }}"
+                        <a wire:navigate href="{{ url('admin/users') }}"
                             class="flex items-center px-4 py-3 text-gray-300 transition duration-300 rounded-lg hover:bg-teal-600 hover:text-white @if(request()->is('admin/users')) bg-teal-600 text-white @else hover:bg-teal-600 hover:text-white @endif">
                             <span class="mr-3 material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                                     viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
@@ -53,7 +53,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('admin/orders') }}"
+                        <a wire:navigate href="{{ url('admin/orders') }}"
                             class="flex items-center px-4 py-3 text-gray-300 transition duration-300 rounded-lg hover:bg-teal-600 hover:text-white @if(request()->is('admin/orders')) bg-teal-600 text-white @else hover:bg-teal-600 hover:text-white @endif">
                             <span class="mr-3 material-icons">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
@@ -66,7 +66,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('admin/products') }}"
+                        <a wire:navigate href="{{ url('admin/products') }}"
                             class="flex items-center px-4 py-3 text-gray-300 transition duration-300 rounded-lg hover:bg-teal-600 hover:text-white @if(request()->is('admin/products')) bg-teal-600 text-white @else hover:bg-teal-600 hover:text-white @endif">
                             <span class="mr-3 material-icons">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
@@ -78,7 +78,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('admin/appointments') }}"
+                        <a wire:navigate href="{{ url('admin/appointments') }}"
                             class="flex items-center px-4 py-3 text-gray-300 transition duration-300 rounded-lg hover:bg-teal-600 hover:text-white @if(request()->is('admin/appointments')) bg-teal-600 text-white @else hover:bg-teal-600 hover:text-white @endif">
                             <span class="mr-3 material-icons"><svg xmlns="http://www.w3.org/2000/svg" height="24px"
                                     viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
