@@ -61,16 +61,16 @@
                 <td colspan="8" class="py-6 text-center text-white bg-teal-600">Loading...</td>
             </tr>
         </tbody>
-        
 
-        </div>
-        
-    </table>
-    
+
+</div>
+
+</table>
+
 </div>
 <div class="mt-4">
-<script>
-    const token = localStorage.getItem('authToken');
+    <script>
+        const token = localStorage.getItem('authToken');
     let url = "http://127.0.0.1:8000/api/orders";
     let url2 = "http://127.0.0.1:8000/api/boxes";
     document.addEventListener('DOMContentLoaded', function(){
@@ -99,7 +99,7 @@
                     <td class="px-4 py-3 font-medium text-white border-r text-normal">
                         <select role="menu"
                             class="text-white bg-gray-800 border border-gray-600 rounded-md p-auto status-dropdown focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            data-order-id="${orders.id}" onchange="updateStatus(event)">
+                            data-order-id="${orders.id}" onchange="updateOrderStatus(event)">
                             <option value="pending" ${orders.status==='pending' ? 'selected' : '' }> Pending </option>
                             <option value="confirmed" ${orders.status==='confirmed' ? 'selected' : '' }> Confirmed </option>
                             <option value="shipped" ${orders.status==='shipped' ? 'selected' : '' }> Shipped </option>
@@ -231,7 +231,7 @@
         });
     }
 
-    function updateStatus(event){
+    function updateOrderStatus(event){
         const dropDown = event.target;
         const orderId = dropDown.getAttribute('data-order-id');
         const newStatus = dropDown.value;
@@ -291,5 +291,5 @@
         });
     });
 }
-</script>
-@endsection
+    </script>
+    @endsection
